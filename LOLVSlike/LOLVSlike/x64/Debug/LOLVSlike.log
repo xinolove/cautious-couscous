@@ -1,2 +1,6 @@
 ﻿  main.cpp
+C:\Users\xinolove\source\repos\LOLVSlike\main.cpp(382,12): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+C:\Users\xinolove\source\repos\LOLVSlike\main.cpp(383,12): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+C:\Users\xinolove\source\repos\LOLVSlike\main.cpp(386,11): warning C4244: “初始化”: 从“long”转换到“float”，可能丢失数据
+C:\Users\xinolove\source\repos\LOLVSlike\main.cpp(387,11): warning C4244: “初始化”: 从“long”转换到“float”，可能丢失数据
   LOLVSlike.vcxproj -> C:\Users\xinolove\source\repos\LOLVSlike\x64\Debug\LOLVSlike.exe
