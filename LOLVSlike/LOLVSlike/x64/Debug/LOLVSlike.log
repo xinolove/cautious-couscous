@@ -1,6 +1,7 @@
 ﻿  main.cpp
-C:\Users\xinolove\source\repos\LOLVSlike\main.cpp(397,12): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-C:\Users\xinolove\source\repos\LOLVSlike\main.cpp(398,12): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-C:\Users\xinolove\source\repos\LOLVSlike\main.cpp(401,11): warning C4244: “初始化”: 从“long”转换到“float”，可能丢失数据
-C:\Users\xinolove\source\repos\LOLVSlike\main.cpp(402,11): warning C4244: “初始化”: 从“long”转换到“float”，可能丢失数据
+C:\Users\xinolove\source\repos\LOLVSlike\main.cpp(428,12): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+C:\Users\xinolove\source\repos\LOLVSlike\main.cpp(429,12): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+C:\Users\xinolove\source\repos\LOLVSlike\main.cpp(432,11): warning C4244: “初始化”: 从“long”转换到“float”，可能丢失数据
+C:\Users\xinolove\source\repos\LOLVSlike\main.cpp(433,11): warning C4244: “初始化”: 从“long”转换到“float”，可能丢失数据
+C:\Users\xinolove\source\repos\LOLVSlike\main.cpp(587,12): warning C4244: “参数”: 从“time_t”转换到“unsigned int”，可能丢失数据
   LOLVSlike.vcxproj -> C:\Users\xinolove\source\repos\LOLVSlike\x64\Debug\LOLVSlike.exe

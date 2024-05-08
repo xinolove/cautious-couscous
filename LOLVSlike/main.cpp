@@ -9,8 +9,8 @@
 bool running = true;
 bool is_game_started = false;
 
-const int WINDOW_WIDTH = 1280;
-const int WINDOW_HEIGHT = 720;
+const int WINDOW_WIDTH = 1760;
+const int WINDOW_HEIGHT = 990;
 
 const int BUTTON_WIDTH = 192;
 const int BUTTON_HEIGHT = 75;
@@ -125,6 +125,37 @@ protected:
 		running = false;
 	}
 };
+
+void LoadingBackground(int n,IMAGE &img_background)
+{
+		switch (n)
+		{
+		case 0:
+			loadimage(&img_background, _T("img/宏伟广场.jpg"));
+			break;
+		case 1:
+			loadimage(&img_background, _T("img/英勇之厅.jpg"));
+			break;
+		case 2:
+			loadimage(&img_background, _T("img/恕瑞玛的废墟.jpg"));
+			break;
+		case 3:
+			loadimage(&img_background, _T("img/太阳之城.jpg"));
+			break;
+		case 4:
+			loadimage(&img_background, _T("img/天界秘库.jpg"));
+			break;
+		case 5:
+			loadimage(&img_background, _T("img/枯萎之地.jpg"));
+			break;
+		case 6:
+			loadimage(&img_background, _T("img/普雷西典.jpg"));
+			break;
+		case 7:
+			loadimage(&img_background, _T("img/以绪奥肯.jpg"));
+			break;
+		}
+}
 
 class Atlas
 {
@@ -336,8 +367,8 @@ public:
 
 	void Draw()const
 	{
-		setlinecolor(RGB(0, 60, 20));
-		setfillcolor(RGB(20, 100, 45));
+		setlinecolor(RGB(255, 255, 0));
+		setfillcolor(RGB(255, 128, 0));
 		fillcircle(position.x, position.y, RADIUS);
 	}
 private:
@@ -482,7 +513,7 @@ public:
 private:
 	const int SPEED =2 ;
 	const int FRAME_WIDTH = 80;
-	const int FRAME_HEIGHT = 80;
+	const int FRAME_HEIGHT = 100;
 	const int SHADOW_WIDTH = 48;
 	int HP = 3;
 
@@ -538,25 +569,27 @@ void DrawPlayerHP(int HP)
 
 int main()
 {
-	initgraph(1280, 720);
+	initgraph(1760, 990);
 
-	atlas_player_left = new Atlas(_T("img/player_left_%d.png"), 6);
-	atlas_player_right = new Atlas(_T("img/player_right_%d.png"), 6);
+	atlas_player_left = new Atlas(_T("img/杀人书/杀人书左_%d.png"), 6);
+	atlas_player_right = new Atlas(_T("img/杀人书/杀人书右_%d.png"), 6);
 
 
-	atlas_enemy_left = new Atlas(_T("img/enemy_left_%d.png"), 6);
-	atlas_enemy_right = new Atlas(_T("img/enemy_right_%d.png"), 6);
+	atlas_enemy_left = new Atlas(_T("img/记录员/shadow_entities_left_%d.png"), 6);
+	atlas_enemy_right = new Atlas(_T("img/记录员/shadow_entities_right_%d.png"), 6);
 
-	mciSendString(_T("open mus/bgm.mp3 alias bgm "), NULL, 0, NULL);
+	mciSendString(_T("open mus/tftset10_trailer.mp3 alias bgm "), NULL, 0, NULL);
 	mciSendString(_T("open mus/hit.wav alias hit "), NULL, 0, NULL);
 
 
 	int score = 0;
 	int timer = 0;
+	srand(time(0));
+	int n = rand()%8;
 	Player player;
 	ExMessage msg;
 	IMAGE img_menu;
-	IMAGE img_background;
+	IMAGE img_background=NULL;
 	IMAGE img_injury;
 	std::vector<Enemy*> enemy_list;
 	std::vector<Bullet> bullet_list(3);
@@ -578,9 +611,9 @@ int main()
 	QuitGameButton btn_quit_game = QuitGameButton(region_btn_quit_game,
 		_T("img/ui_quit_idle.png"), _T("img/ui_quit_hovered.png"), _T("img/ui_quit_pushed.png"));
 
-	loadimage(&img_menu, _T("img/menu.png"));
-	loadimage(&img_background, _T("img/background.png"));
-	loadimage(&img_injury, _T("img/enemy_right_1.png"));
+	loadimage(&img_menu, _T("img/menu.jpg"));
+	LoadingBackground(n, img_background);
+	loadimage(&img_injury, _T("img/R-C.png"));
 
 	BeginBatchDraw();
 
