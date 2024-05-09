@@ -232,6 +232,7 @@ public:
 		anim_left=new Animation (atlas_player_left, 45);
 		anim_right=new Animation (atlas_player_right, 45);
 	}
+
 	Player(const Player& player)
 	{
 		img_shadow=player.img_shadow;
@@ -249,7 +250,6 @@ public:
 
 	}
 	
-
 	POINT GetPosition()const{
 		return position;
 	}
@@ -318,7 +318,7 @@ public:
 
 	void Draw(int delta)
 	{
-		int pos_shadow_x = position.x + (FRAME_WIDTH / 2 - SHADOW_WIDTH / 2);
+		int pos_shadow_x = position.x + (FRAME_WIDTH / 2 - SHADOW_WIDTH / 2)-5;
 		int pos_shadow_y = position.y + FRAME_HEIGHT - 8;
 		putimage_alpha(pos_shadow_x, pos_shadow_y, &img_shadow);
 
@@ -334,6 +334,45 @@ public:
 		else
 			anim_right->Play(position.x, position.y, delta);
 	}
+
+	void Soulstealer()
+	{
+		switch (flag)
+		{
+			case 0:case 1:case 2:case 3:case 4:
+				break;
+			case 5:case 6:case 7:case 8:case 9:
+			{
+				damage = 110;
+				break;
+			}
+			case 10:case 11:case 12:case 13:case 14:
+			{
+				damage = 120;
+				SPEED = 4;
+				break;
+			}
+			case 15:case 16:case 17:case 18:case 19:
+			{
+				damage = 130;
+				SPEED = 4;
+				break;
+			}
+			case 20:case 21:case 22:case 23:case 24:
+			{
+				damage = 140;
+				SPEED = 4;
+				break;
+			}
+			case 25:
+			{
+				damage = 150;
+				SPEED = 4;
+				break;
+			}
+		}
+	}
+
 	~Player()
 	{
 		delete anim_left;
@@ -341,11 +380,13 @@ public:
 	}
 
 public:
-	const int SPEED = 3;
+	int SPEED = 3;
 	const int FRAME_WIDTH = 80;
 	const int FRAME_HEIGHT = 80;
 	const int SHADOW_WIDTH = 32;
-	int HP = 6;
+	int HP = 600;
+	int damage = 100;
+	static int flag;
 private:
 	IMAGE img_shadow;
 	Animation* anim_left;
@@ -356,6 +397,8 @@ private:
 	bool is_move_left = false;
 	bool is_move_right = false;
 };
+
+int Player::flag = 0;
 
 class Bullet
 {
@@ -371,6 +414,7 @@ public:
 		setfillcolor(RGB(255, 128, 0));
 		fillcircle(position.x, position.y, RADIUS);
 	}
+	
 private:
 	const int RADIUS = 10;
 };
@@ -473,7 +517,7 @@ public:
 	void Draw(int delta)
 	{
 		int pos_shadow_x = position.x + (FRAME_WIDTH / 2 - SHADOW_WIDTH / 2);
-		int pos_shadow_y = position.y + FRAME_HEIGHT - 35;
+		int pos_shadow_y = position.y + FRAME_HEIGHT-10;
 		putimage_alpha(pos_shadow_x, pos_shadow_y, &img_shadow);
 
 		if (facing_left)
@@ -485,7 +529,7 @@ public:
 
 	void Hurt(const Player& player)
 	{
-		HP--;
+		HP-=player.damage;
 		if(HP>0)
 		{
 			const POINT& player_position = player.GetPosition();
@@ -510,12 +554,15 @@ public:
 		delete anim_left;
 		delete anim_right;
 	}
+
+public:
+	int damage = 100;
+	int HP = 300;
 private:
 	const int SPEED =2 ;
 	const int FRAME_WIDTH = 80;
 	const int FRAME_HEIGHT = 100;
 	const int SHADOW_WIDTH = 48;
-	int HP = 3;
 
 	IMAGE img_shadow;
 	Animation* anim_left;
@@ -524,10 +571,9 @@ private:
 	bool facing_left = false;
 };
 
-
 void TryGenerateEnemy(std::vector<Enemy*>& enemy_list)
 {
-	const int INTERVAL = 100;
+	const int INTERVAL = 240;
 	static int counter = 0;
 	if ((++counter) % INTERVAL == 0)
 		enemy_list.push_back(new Enemy());
@@ -579,17 +625,19 @@ int main()
 	atlas_enemy_right = new Atlas(_T("img/记录员/shadow_entities_right_%d.png"), 6);
 
 	mciSendString(_T("open mus/tftset10_trailer.mp3 alias bgm "), NULL, 0, NULL);
-	mciSendString(_T("open mus/hit.wav alias hit "), NULL, 0, NULL);
+	mciSendString(_T("open mus/sci-fi_weapon_blaster_laser_boom_zap_01.wav alias hit "), NULL, 0, NULL);
+	mciSendString(_T("open mus/voice_female_a_hurt_pain_01.wav alias hurt "), NULL, 0, NULL);
 
 
 	int score = 0;
 	int timer = 0;
 	srand(time(0));
-	int n = rand()%8;
+	int n = rand() % 8;
+	bool is_esc = false;
 	Player player;
 	ExMessage msg;
 	IMAGE img_menu;
-	IMAGE img_background=NULL;
+	IMAGE img_background = NULL;
 	IMAGE img_injury;
 	std::vector<Enemy*> enemy_list;
 	std::vector<Bullet> bullet_list(3);
@@ -611,7 +659,7 @@ int main()
 	QuitGameButton btn_quit_game = QuitGameButton(region_btn_quit_game,
 		_T("img/ui_quit_idle.png"), _T("img/ui_quit_hovered.png"), _T("img/ui_quit_pushed.png"));
 
-	loadimage(&img_menu, _T("img/menu.jpg"));
+	loadimage(&img_menu, _T("img/menu.png"));
 	LoadingBackground(n, img_background);
 	loadimage(&img_injury, _T("img/R-C.png"));
 
@@ -620,8 +668,11 @@ int main()
 	while (running)
 	{
 		DWORD start_time = GetTickCount();
+
 		while (peekmessage(&msg))
 		{
+			if (msg.vkcode == VK_ESCAPE)
+				running = false;
 			if (is_game_started)
 				player.ProcessEvent(msg);
 			else
@@ -633,13 +684,15 @@ int main()
 		bool collision = false;
 		if (is_game_started)
 		{
+			player.Soulstealer();
 			TryGenerateEnemy(enemy_list);
 			player.Move();
 			UpdateBullets(bullet_list, player);
 
 			for (Enemy* enemy : enemy_list)
+			{
 				enemy->Move(player);
-
+			}
 
 
 			for (Enemy* enemy : enemy_list)
@@ -650,7 +703,6 @@ int main()
 					{
 						mciSendString(_T("play hit from 0"), NULL, 0, NULL);
 						enemy->Hurt(player);
-						score++;
 					}
 				}
 			}
@@ -658,8 +710,11 @@ int main()
 			for (size_t i = 0; i < enemy_list.size(); i++)
 			{
 				Enemy* enemy = enemy_list[i];
-				if (enemy->CheckAlive()<=0)
+				if (enemy->CheckAlive() <= 0)
 				{
+					if (player.flag < 25)
+						player.flag++;
+					score++;
 					std::swap(enemy_list[i], enemy_list.back());
 					enemy_list.pop_back();
 					delete enemy;
@@ -670,10 +725,14 @@ int main()
 				if (enemy->CheckPlayerCollision(player))
 				{
 					collision = true;
-					mciSendString(_T("play hit from 0"), NULL, 0, NULL);
-					player.HP--;
+					if (player.flag >= 5)
+						player.flag -= 5;
+					else
+						player.flag = 0;
+					mciSendString(_T("play hurt from 0"), NULL, 0, NULL);
+					player.HP -= enemy->damage;
 					enemy->InjuryProtection(player);
-					if (player.HP<=0)
+					if (player.HP <= 0)
 					{
 						static TCHAR text[128];
 						_stprintf_s(text, _T("最终得分：%d！"), score);
