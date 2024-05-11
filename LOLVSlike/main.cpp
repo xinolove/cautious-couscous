@@ -2,645 +2,112 @@
 #include<string>
 #include<vector>
 #include<iostream>
+#include<functional>
 
-#pragma comment(lib, "MSIMG32.LIB")
-#pragma comment(lib,"Winmm.lib")
+#include"scene.h"
+#include"altas.h"
+#include"animation.h"
+#include"menu_scene.h"
+#include"game_scene.h"
+#include"SelectorScene.h"
+#include"scene_manager.h"
+#include"button.h"
+#include"Player.h"
+#include"enemy.h"
+#include"bullet.h"
+#include"util.h"
 
-bool running = true;
-bool is_game_started = false;
 
 const int WINDOW_WIDTH = 1760;
 const int WINDOW_HEIGHT = 990;
 
 const int BUTTON_WIDTH = 192;
 const int BUTTON_HEIGHT = 75;
-inline void putimage_alpha(int x, int y, IMAGE* img)
+
+bool running = true;
+
+IMAGE img_menu;
+IMAGE img_select;
+IMAGE img_background;
+IMAGE img_injury;
+IMAGE img_shadow;
+
+Atlas Divine_Sunderer_left;
+Atlas Divine_Sunderer_right;
+Atlas Infinity_Edge_left;
+Atlas Infinity_Edge_right;
+Atlas Mejai_s_Soulstealer_left;
+Atlas Mejai_s_Soulstealer_right;
+Atlas Morellonomicon_left;
+Atlas Morellonomicon_right;
+Atlas Rapid_Firecannon_left;
+Atlas Rapid_Firecannon_right;
+Atlas Runaan_s_Hurricane_left;
+Atlas Runaan_s_Hurricane_right;
+
+Atlas shadow_entities_left;
+Atlas shadow_entities_right;
+
+
+SceneManager scene_manager;
+
+Scene* menu_scene = NULL;
+Scene* game_scene = NULL;
+Scene* selector_scene = NULL;
+
+void flip_atlas(Atlas& src, Atlas& dst)
 {
-	int w = img->getwidth();
-	int h = img->getheight();
-	AlphaBlend(GetImageHDC(NULL), x, y, w, h,
-		GetImageHDC(img), 0, 0, w, h, { AC_SRC_OVER,0,255,AC_SRC_ALPHA });
+	dst.clear();
+	for (int i = 0; i < src.get_size(); i++)
+	{
+		IMAGE img_flpipped;
+		flip_image(src.get_image(i), &img_flpipped);
+		dst.add_image(img_flpipped);
+	}
 }
 
-class Button
+void load_game_resources()
 {
-public:
-	Button(RECT rect,LPCTSTR path_img_idle,LPCTSTR path_img_hovered,LPCTSTR path_img_pushed)
-	{
-		region = rect;
-
-		loadimage(&img_idle, path_img_idle);
-		loadimage(&img_hovered, path_img_hovered);
-		loadimage(&img_pushed, path_img_pushed);
-	}
-	~Button() = default;
-
-	void ProcessEvent(const ExMessage& msg)
-	{
-		switch (msg.message)
-		{
-		case WM_MOUSEMOVE:
-			if (status == Status::Idle && CheckCursorHit(msg.x, msg.y))
-				status = Status::Hovered;
-			else if (status == Status::Hovered && !CheckCursorHit(msg.x, msg.y))
-				status = Status::Idle;
-			break;
-		case WM_LBUTTONDOWN:
-			if (CheckCursorHit(msg.x, msg.y))
-				status = Status::Pushed;
-			break;
-		case WM_LBUTTONUP:
-			if (status == Status::Pushed)
-				Onclick();
-			break;
-		default:
-			break;
-		}
-	}
-
-	void Draw()
-	{
-		switch (status)
-		{
-		case Status::Idle:
-			putimage(region.left, region.top, &img_idle);
-			break;
-		case Status::Hovered:
-			putimage(region.left, region.top, &img_hovered);
-			break;
-		case Status::Pushed:
-			putimage(region.left, region.top, &img_pushed);
-			break;
-		}
-	}
-protected:
-	virtual void Onclick() = 0;
-
-private:
-	enum class Status
-	{
-		Idle = 0,
-		Hovered,
-		Pushed
-	};
-private:
-	RECT region;
-	IMAGE img_idle;
-	IMAGE img_hovered;
-	IMAGE img_pushed;
-	Status status = Status::Idle;
-private:
-	bool CheckCursorHit(int x, int y)
-	{
-		return x >= region.left && x <= region.right && y >= region.top && y <= region.bottom;
-	}
-};
-
-class StartGameButton :public Button
-{
-public:
-	StartGameButton(RECT rect,LPCTSTR path_img_idle,LPCTSTR path_img_hovered,LPCTSTR path_img_pushed)
-		:Button(rect,path_img_idle,path_img_hovered,path_img_pushed){}
-	~StartGameButton() = default;
-
-protected:
-	void Onclick()
-	{
-		is_game_started = true;
-
-		mciSendString(_T("play bgm repeat from 0"), NULL, 0, NULL);
-	}
-};
-
-class QuitGameButton :public Button
-{
-public:
-	QuitGameButton(RECT rect, LPCTSTR path_img_idle, LPCTSTR path_img_hovered, LPCTSTR path_img_pushed)
-		:Button(rect, path_img_idle, path_img_hovered, path_img_pushed) {}
-	~QuitGameButton() = default;
-
-protected:
-	void Onclick()
-	{
-		running = false;
-	}
-};
-
-void LoadingBackground(int n,IMAGE &img_background)
-{
-		switch (n)
-		{
-		case 0:
-			loadimage(&img_background, _T("img/宏伟广场.jpg"));
-			break;
-		case 1:
-			loadimage(&img_background, _T("img/英勇之厅.jpg"));
-			break;
-		case 2:
-			loadimage(&img_background, _T("img/恕瑞玛的废墟.jpg"));
-			break;
-		case 3:
-			loadimage(&img_background, _T("img/太阳之城.jpg"));
-			break;
-		case 4:
-			loadimage(&img_background, _T("img/天界秘库.jpg"));
-			break;
-		case 5:
-			loadimage(&img_background, _T("img/枯萎之地.jpg"));
-			break;
-		case 6:
-			loadimage(&img_background, _T("img/普雷西典.jpg"));
-			break;
-		case 7:
-			loadimage(&img_background, _T("img/以绪奥肯.jpg"));
-			break;
-		}
-}
-
-class Atlas
-{
-public:
-	Atlas(LPCSTR path, int num)
-	{
-		TCHAR path_file[256];
-		for (size_t i = 0; i < num; i++)
-		{
-			_stprintf_s(path_file, path, i);
-
-			IMAGE* frame = new IMAGE();
-			loadimage(frame, path_file);
-			frame_list.push_back(frame);
-		}
-	}
+	AddFontResourceEx(_T("img/QingNiaoHuaGuangJianMeiHei-2.ttf"), FR_PRIVATE, NULL);
 	
-	~Atlas()
-	{
-		for (size_t i = 0; i < frame_list.size(); i++)
-		{
-			delete frame_list[i];
-		}
-	}
-public:
-	std::vector<IMAGE*>frame_list;
-};
+	loadimage(&img_select, _T("img/select.jpg"));
+	loadimage(&img_menu, _T("img/menu.png"));
+	loadimage(&img_injury, _T("img/R-C.png"));
+	loadimage(&img_shadow, _T("img/shadow_player.png"));
 
-Atlas* atlas_player_left;
-Atlas* atlas_player_right;
-Atlas* atlas_enemy_left;
-Atlas* atlas_enemy_right;
-Atlas* atlas_player_left_skt;
-Atlas* atlas_player_right_skt;
+	shadow_entities_left.load_from_file(_T("img/shadow_entities/shadow_entities_left_%d.png"), 6);
+	shadow_entities_right.load_from_file(_T("img/shadow_entities/shadow_entities_right_%d.png"), 6);
+	Divine_Sunderer_left.load_from_file(_T("img/Divine_Sunderer/Divine_Sunderer_left_%d.png"), 6);
+	Divine_Sunderer_right.load_from_file(_T("img/Divine_Sunderer/Divine_Sunderer_right_%d.png"), 6);
+	Infinity_Edge_left.load_from_file(_T("img/Infinity_Edge/Infinity_Edge_left_%d.png"), 6);
+	Infinity_Edge_right.load_from_file(_T("img/Infinity_Edge/Infinity_Edge_right_%d.png"), 6);
+	Mejai_s_Soulstealer_left.load_from_file(_T("img/Mejai_s_Soulstealer/Mejai_s_Soulstealer_left_ %d.png"), 6);
+	Mejai_s_Soulstealer_right.load_from_file(_T("img/Mejai_s_Soulstealer/Mejai_s_Soulstealer_right_ %d.png"), 6);
+	Morellonomicon_left.load_from_file(_T("img/Morellonomicon/Morellonomicon_left_%d.png"), 6);
+	Morellonomicon_right.load_from_file(_T("img/Morellonomicon/Morellonomicon_right_%d.png"), 6);
+	Rapid_Firecannon_left.load_from_file(_T("img/Rapid_Firecannon/Rapid_Firecannon_left_%d.png"), 6);
+	Rapid_Firecannon_right.load_from_file(_T("img/Rapid_Firecannon/Rapid_Firecannon_right_%d.png"), 6);
+	Runaan_s_Hurricane_left.load_from_file(_T("img/Runaan_s_Hurricane/Runaan_s_Hurricane_left_%d.png"), 6);
+	Runaan_s_Hurricane_right.load_from_file(_T("img/Runaan_s_Hurricane/Runaan_s_Hurricane_right_%d.png"), 6);
 
-
-class Animation
-{
-public:
-	Animation(Atlas* atlas,int interval)
-	{
-		anim_atlas = atlas;
-		interval_ms = interval;
-	}
-
-
-	void Play(int x, int y, int delta)
-	{
-		timer += delta;
-		if (timer >= interval_ms)
-		{
-			idx_frame = (idx_frame + 1) % anim_atlas->frame_list.size();
-			timer = 0;
-		}
-
-		putimage_alpha(x, y, anim_atlas->frame_list[idx_frame]);
-	}
-	~Animation() = default;
-
-private:
-	int timer = 0;
-	int idx_frame = 0;
-	int interval_ms = 0;
-private:
-	Atlas* anim_atlas;
-};
-
-class Player
-{
-public:
-	Player()
-	{
-		loadimage(&img_shadow, _T("img/shadow_player.png"));
-		anim_left=new Animation (atlas_player_left, 45);
-		anim_right=new Animation (atlas_player_right, 45);
-	}
-
-	Player(const Player& player)
-	{
-		img_shadow=player.img_shadow;
-		anim_left=player.anim_left;
-		anim_right=player.anim_right;
-		position=player.position;
-		is_move_up = player.is_move_up;
-		is_move_down = player.is_move_down;
-		is_move_left = player.is_move_left;
-		is_move_right = player.is_move_right;
-
-		loadimage(&img_shadow, _T("img/shadow_player.png"));
-		anim_left = new Animation(atlas_player_left_skt, 45);
-		anim_right = new Animation(atlas_player_right_skt, 45);
-
-	}
-	
-	POINT GetPosition()const{
-		return position;
-	}
-
-	void ProcessEvent(const ExMessage& msg)
-	{
-		switch (msg.message)
-		{
-		case WM_KEYDOWN:
-			switch (msg.vkcode)
-			{
-			case 87:
-				is_move_up = true;
-				break;
-			case 83:
-				is_move_down = true;
-				break;
-			case 65:
-				is_move_left = true;
-				break;
-			case 68:
-				is_move_right = true;
-				break;
-			}
-			break;
-		
-		case WM_KEYUP:
-			switch (msg.vkcode)
-			{
-			case 87:
-				is_move_up = false;
-				break;
-			case 83:
-				is_move_down = false;
-				break;
-			case 65:
-				is_move_left = false;
-				break;
-			case 68:
-				is_move_right = false;
-				break;
-			}
-			break;
-		}
-	}
-
-	void Move()
-	{
-		int dir_x = is_move_right - is_move_left;
-		int dir_y = is_move_down - is_move_up;
-		double len_dir = sqrt(dir_x * dir_x + dir_y * dir_y);
-		if (len_dir != 0)
-		{
-			double normalized_x = dir_x / len_dir;
-			double normalized_y = dir_y / len_dir;
-			position.x += (int)(SPEED * normalized_x);
-			position.y += (int)(SPEED * normalized_y);
-		}
-
-		if (position.x < 0)position.x = 0;
-		if (position.y < 0)position.y = 0;
-		if (position.x + FRAME_WIDTH > WINDOW_WIDTH)position.x = WINDOW_WIDTH - FRAME_WIDTH;
-		if (position.y + FRAME_HEIGHT > WINDOW_HEIGHT)position.y = WINDOW_HEIGHT - FRAME_HEIGHT;
-
-	}
-
-	void Draw(int delta)
-	{
-		int pos_shadow_x = position.x + (FRAME_WIDTH / 2 - SHADOW_WIDTH / 2)-5;
-		int pos_shadow_y = position.y + FRAME_HEIGHT - 8;
-		putimage_alpha(pos_shadow_x, pos_shadow_y, &img_shadow);
-
-		static bool facing_left = false;
-		int dir_x = is_move_right - is_move_left;
-		if (dir_x < 0)
-			facing_left = true;
-		else if (dir_x > 0)
-			facing_left = false;
-
-		if (facing_left)
-			anim_left->Play(position.x, position.y, delta);
-		else
-			anim_right->Play(position.x, position.y, delta);
-	}
-
-	void Soulstealer()
-	{
-		switch (flag)
-		{
-			case 0:case 1:case 2:case 3:case 4:
-				break;
-			case 5:case 6:case 7:case 8:case 9:
-			{
-				damage = 110;
-				break;
-			}
-			case 10:case 11:case 12:case 13:case 14:
-			{
-				damage = 120;
-				SPEED = 4;
-				break;
-			}
-			case 15:case 16:case 17:case 18:case 19:
-			{
-				damage = 130;
-				SPEED = 4;
-				break;
-			}
-			case 20:case 21:case 22:case 23:case 24:
-			{
-				damage = 140;
-				SPEED = 4;
-				break;
-			}
-			case 25:
-			{
-				damage = 150;
-				SPEED = 4;
-				break;
-			}
-		}
-	}
-
-	~Player()
-	{
-		delete anim_left;
-		delete anim_right;
-	}
-
-public:
-	int SPEED = 3;
-	const int FRAME_WIDTH = 80;
-	const int FRAME_HEIGHT = 80;
-	const int SHADOW_WIDTH = 32;
-	int HP = 600;
-	int damage = 100;
-	static int flag;
-private:
-	IMAGE img_shadow;
-	Animation* anim_left;
-	Animation* anim_right;
-	POINT position = { 500,500 };
-	bool is_move_up = false;
-	bool is_move_down = false;
-	bool is_move_left = false;
-	bool is_move_right = false;
-};
-
-int Player::flag = 0;
-
-class Bullet
-{
-public:
-	POINT position = { 0,0 };
-	
-	Bullet() = default;
-	~Bullet() = default;
-
-	void Draw()const
-	{
-		setlinecolor(RGB(255, 255, 0));
-		setfillcolor(RGB(255, 128, 0));
-		fillcircle(position.x, position.y, RADIUS);
-	}
-	
-private:
-	const int RADIUS = 10;
-};
-
-class Enemy
-{
-public:
-	Enemy()
-	{
-		loadimage(&img_shadow, _T("img/shadow_enemy.png"));
-		anim_left = new Animation(atlas_enemy_left, 45);
-		anim_right = new Animation(atlas_enemy_right, 45);
-		
-		enum class SpawnEdge
-		{
-			Up=0,
-			Down,
-			Left,
-			Right
-		};
-
-		SpawnEdge edge = (SpawnEdge)(rand() % 4);
-		switch (edge)
-		{
-		case SpawnEdge::Up:
-			position.x = rand() % WINDOW_WIDTH;
-			position.y = -FRAME_HEIGHT;
-			break;
-		case SpawnEdge::Down:
-			position.x = rand() % WINDOW_WIDTH;
-			position.y = -WINDOW_HEIGHT;
-			break;
-		case SpawnEdge::Left:
-			position.x = -FRAME_WIDTH;
-			position.y =rand() % WINDOW_HEIGHT ;
-			break;
-		case SpawnEdge::Right:
-			position.x = -WINDOW_WIDTH;
-			position.y = rand() % WINDOW_HEIGHT;
-			break;
-		default:
-			break;
-		}
-	}
-	bool CheckBulletCollision(const Bullet& bullet)
-	{
-		bool is_overlap_x = bullet.position.x >= position.x && bullet.position.x <= position.x + FRAME_WIDTH;
-		bool is_overlap_y = bullet.position.y >= position.y && bullet.position.y <= position.y + FRAME_WIDTH;
-		return is_overlap_x && is_overlap_y;
-	}
-
-
-	bool CheckPlayerCollision(const Player& player)
-	{
-		float w1 = FRAME_WIDTH / 1.8;
-		float h1 = FRAME_HEIGHT / 1.8;
-		float w2 = w1; 
-		float h2 = h1;
-		float w = abs(position.x  - player.GetPosition().x );
-		float h = abs(position.y-player.GetPosition().y);
-
-		if (w < (w1 + w2) / 2 && h < (h1 + h2) / 2)
-				return true;
-		else
-				return false;
-	}
-
-	void Move(const Player& player)
-	{
-		const POINT& player_position = player.GetPosition();
-		int dir_x = player_position.x - position.x;
-		int dir_y = player_position.y - position.y;
-		double len_dir = sqrt(dir_x * dir_x + dir_y * dir_y);
-		if (len_dir != 0)
-		{
-			double normalized_x = dir_x / len_dir;
-			double normalized_y = dir_y / len_dir;
-			position.x += (int)(SPEED * normalized_x);
-			position.y += (int)(SPEED * normalized_y);
-		}
-		if (dir_x < 0)
-			facing_left = true;
-		else if (dir_x > 0)
-			facing_left = false;
-	}
-
-	void InjuryProtection(const Player& player)
-	{
-		const POINT& player_position = player.GetPosition();
-		int dir_x = player_position.x - position.x;
-		int dir_y = player_position.y - position.y;
-		double len_dir = sqrt(dir_x * dir_x + dir_y * dir_y);
-
-			double normalized_x = dir_x / len_dir;
-			double normalized_y = dir_y / len_dir;
-			position.x -= (int)(50*SPEED * normalized_x);
-			position.y -= (int)(50*SPEED * normalized_y);
-	}
-
-	void Draw(int delta)
-	{
-		int pos_shadow_x = position.x + (FRAME_WIDTH / 2 - SHADOW_WIDTH / 2);
-		int pos_shadow_y = position.y + FRAME_HEIGHT-10;
-		putimage_alpha(pos_shadow_x, pos_shadow_y, &img_shadow);
-
-		if (facing_left)
-			anim_left->Play(position.x, position.y, delta);
-		else
-			anim_right->Play(position.x, position.y, delta);
-
-	}
-
-	void Hurt(const Player& player)
-	{
-		HP-=player.damage;
-		if(HP>0)
-		{
-			const POINT& player_position = player.GetPosition();
-			int dir_x = player_position.x - position.x;
-			int dir_y = player_position.y - position.y;
-			double len_dir = sqrt(dir_x * dir_x + dir_y * dir_y);
-
-			double normalized_x = dir_x / len_dir;
-			double normalized_y = dir_y / len_dir;
-			position.x -= (int)(25 * SPEED * normalized_x);
-			position.y -= (int)(25 * SPEED * normalized_y);
-		}
-	}
-
-	int CheckAlive()
-	{
-		return HP;
-	}
-
-	~Enemy()
-	{
-		delete anim_left;
-		delete anim_right;
-	}
-
-public:
-	int damage = 100;
-	int HP = 300;
-private:
-	const int SPEED =2 ;
-	const int FRAME_WIDTH = 80;
-	const int FRAME_HEIGHT = 100;
-	const int SHADOW_WIDTH = 48;
-
-	IMAGE img_shadow;
-	Animation* anim_left;
-	Animation* anim_right;
-	POINT position = { 0,0 };
-	bool facing_left = false;
-};
-
-void TryGenerateEnemy(std::vector<Enemy*>& enemy_list)
-{
-	const int INTERVAL = 240;
-	static int counter = 0;
-	if ((++counter) % INTERVAL == 0)
-		enemy_list.push_back(new Enemy());
+	mciSendString(_T("open mus/tftset10_trailer.mp3 alias bgm "), NULL, 0, NULL);
+	mciSendString(_T("open mus/URF_champion_select.mp3 alias select "), NULL, 0, NULL);
+	mciSendString(_T("open mus/sci-fi_weapon_blaster_laser_boom_zap_01.wav alias hit "), NULL, 0, NULL);
+	mciSendString(_T("open mus/voice_female_a_hurt_pain_01.wav alias hurt "), NULL, 0, NULL);
 }
 
-void UpdateBullets(std::vector<Bullet>& bullet_list, const Player& player)
-{
-	const double RADIAL_SPEED = 0.001;
-	const double TANGENT_SPEED = 0.002;
-	double radian_interval = 2 * 3.14159 / bullet_list.size();
-	POINT player_position = player.GetPosition();
-	double radius = 100+25 * sin(GetTickCount() * RADIAL_SPEED);
-	for (size_t i = 0; i < bullet_list.size(); i++)
-	{
-		double radian = GetTickCount() * TANGENT_SPEED + radian_interval * i;
-		bullet_list[i].position.x = player_position.x + player.FRAME_WIDTH / 2 + (int)(radius * sin(radian));
-		bullet_list[i].position.y = player_position.y + player.FRAME_HEIGHT / 2 + (int)(radius * cos(radian));
-	}
-}
+StartGameButton btn_start_game;
+QuitGameButton btn_quit_game;
 
-void DrawPlayerScore(int score)
-{
-	static TCHAR text[64];
-	_stprintf_s(text, _T("当前玩家得分：%d"), score);
+Player* player=NULL;
 
-	setbkmode(TRANSPARENT);
-	settextcolor(RGB(255, 85, 185));
-	outtextxy(10, 10, text);
-}
-void DrawPlayerHP(int HP)
-{
-	static TCHAR text[64];
-	_stprintf_s(text, _T("当前玩家HP：%d"), HP);
-
-	setbkmode(TRANSPARENT);
-	settextcolor(RGB(255, 85, 185));
-	outtextxy(200, 10, text);
-}
 
 int main()
 {
 	initgraph(1760, 990);
 
-	atlas_player_left = new Atlas(_T("img/杀人书/杀人书左_%d.png"), 6);
-	atlas_player_right = new Atlas(_T("img/杀人书/杀人书右_%d.png"), 6);
-
-
-	atlas_enemy_left = new Atlas(_T("img/记录员/shadow_entities_left_%d.png"), 6);
-	atlas_enemy_right = new Atlas(_T("img/记录员/shadow_entities_right_%d.png"), 6);
-
-	mciSendString(_T("open mus/tftset10_trailer.mp3 alias bgm "), NULL, 0, NULL);
-	mciSendString(_T("open mus/sci-fi_weapon_blaster_laser_boom_zap_01.wav alias hit "), NULL, 0, NULL);
-	mciSendString(_T("open mus/voice_female_a_hurt_pain_01.wav alias hurt "), NULL, 0, NULL);
-
-
-	int score = 0;
-	int timer = 0;
-	srand(time(0));
-	int n = rand() % 8;
-	bool is_esc = false;
-	Player player;
-	ExMessage msg;
-	IMAGE img_menu;
-	IMAGE img_background = NULL;
-	IMAGE img_injury;
-	std::vector<Enemy*> enemy_list;
-	std::vector<Bullet> bullet_list(3);
+	load_game_resources();
+	
 
 	RECT region_btn_start_game, region_btn_quit_game;
 
@@ -654,36 +121,42 @@ int main()
 	region_btn_quit_game.top = 550;
 	region_btn_quit_game.bottom = region_btn_quit_game.top + BUTTON_HEIGHT;
 
-	StartGameButton btn_start_game = StartGameButton(region_btn_start_game,
+
+	btn_start_game = StartGameButton(region_btn_start_game,
 		_T("img/ui_start_idle.png"), _T("img/ui_start_hovered.png"), _T("img/ui_start_pushed.png"));
-	QuitGameButton btn_quit_game = QuitGameButton(region_btn_quit_game,
+	btn_quit_game = QuitGameButton(region_btn_quit_game,
 		_T("img/ui_quit_idle.png"), _T("img/ui_quit_hovered.png"), _T("img/ui_quit_pushed.png"));
 
-	loadimage(&img_menu, _T("img/menu.png"));
-	LoadingBackground(n, img_background);
-	loadimage(&img_injury, _T("img/R-C.png"));
+	int score = 0;
+	int timer = 0;
+	bool is_esc = false;
+	ExMessage msg;
+	const int FPS = 60;
+	
+	std::vector<Enemy*> enemy_list;
+	std::vector<Bullet> bullet_list(3);
 
 	BeginBatchDraw();
 
-	while (running)
+	menu_scene = new MenuScene();
+	game_scene = new GameScene();
+	selector_scene = new SelectorScene();
+
+	scene_manager.set_current_scene(menu_scene);
+
+
+	while (true)
 	{
 		DWORD start_time = GetTickCount();
 
 		while (peekmessage(&msg))
 		{
-			if (msg.vkcode == VK_ESCAPE)
-				running = false;
-			if (is_game_started)
-				player.ProcessEvent(msg);
-			else
-			{
-				btn_start_game.ProcessEvent(msg);
-				btn_quit_game.ProcessEvent(msg);
-			}
+			scene_manager.on_input(msg);
+			
 		}
-		bool collision = false;
-		if (is_game_started)
-		{
+		
+		/*bool collision = false;
+
 			player.Soulstealer();
 			TryGenerateEnemy(enemy_list);
 			player.Move();
@@ -741,12 +214,16 @@ int main()
 						break;
 					}
 				}
-			}
-		}
+			}*/
+		static DWORD last_tick_time = GetTickCount();
+		DWORD current_tick_time = GetTickCount();
+		DWORD delta_tick = current_tick_time - last_tick_time;
+		scene_manager.on_update(delta_tick);
+		last_tick_time = current_tick_time;
+
 		cleardevice();
-		if (is_game_started)
-		{
-			putimage(0, 0, &img_background);
+		scene_manager.on_draw();
+			/*putimage(0, 0, &img_background);
 			if (collision)
 			{
 				timer = 10;
@@ -767,29 +244,18 @@ int main()
 			for (const Bullet& bullet : bullet_list)
 				bullet.Draw();
 			DrawPlayerScore(score);
-			DrawPlayerHP(player.HP);
-		}
-		else
-		{
-			putimage(0, 0, &img_menu);
-			btn_start_game.Draw();
-			btn_quit_game.Draw();
-		}
+			DrawPlayerHP(player.HP);*/
 
 		FlushBatchDraw();
 
 		DWORD end_time = GetTickCount();
 		DWORD delta_time = end_time - start_time;
-		if (delta_time < 1000 / 144)
+		if (delta_time < 1000 / FPS)
 		{
-			Sleep(1000 / 144 - delta_time);
+			Sleep(1000 / FPS - delta_time);
 		}
 	}
 
-	delete atlas_player_left;
-	delete atlas_player_right;
-	delete atlas_enemy_left;
-	delete atlas_enemy_right;
 
 	EndBatchDraw();
 

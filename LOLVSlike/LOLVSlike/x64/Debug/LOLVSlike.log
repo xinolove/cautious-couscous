@@ -1,7 +1,7 @@
 ﻿  main.cpp
-C:\Users\xinolove\source\repos\LOLVSlike\main.cpp(472,12): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-C:\Users\xinolove\source\repos\LOLVSlike\main.cpp(473,12): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-C:\Users\xinolove\source\repos\LOLVSlike\main.cpp(476,11): warning C4244: “初始化”: 从“long”转换到“float”，可能丢失数据
-C:\Users\xinolove\source\repos\LOLVSlike\main.cpp(477,11): warning C4244: “初始化”: 从“long”转换到“float”，可能丢失数据
-C:\Users\xinolove\source\repos\LOLVSlike\main.cpp(634,12): warning C4244: “参数”: 从“time_t”转换到“unsigned int”，可能丢失数据
+C:\Users\xinolove\source\repos\LOLVSlike\enemy.h(78,12): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+C:\Users\xinolove\source\repos\LOLVSlike\enemy.h(79,12): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+C:\Users\xinolove\source\repos\LOLVSlike\enemy.h(82,11): warning C4244: “初始化”: 从“long”转换到“float”，可能丢失数据
+C:\Users\xinolove\source\repos\LOLVSlike\enemy.h(83,11): warning C4244: “初始化”: 从“long”转换到“float”，可能丢失数据
+C:\Users\xinolove\source\repos\LOLVSlike\game_scene.h(35,13): warning C4244: “参数”: 从“time_t”转换到“unsigned int”，可能丢失数据
   LOLVSlike.vcxproj -> C:\Users\xinolove\source\repos\LOLVSlike\x64\Debug\LOLVSlike.exe

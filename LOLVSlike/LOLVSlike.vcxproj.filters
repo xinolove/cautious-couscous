@@ -13,10 +13,84 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\scene">
+      <UniqueIdentifier>{0e230aa8-4752-4c37-846a-a3b50c7cf2d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\anm">
+      <UniqueIdentifier>{46451666-8111-4782-be6f-509c7026e629}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Character">
+      <UniqueIdentifier>{69ec5a61-d2c4-466f-aad7-bfa10cc14652}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Character\Player">
+      <UniqueIdentifier>{640b9eaa-2073-4512-9911-29c5b02f2908}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\util">
+      <UniqueIdentifier>{016aa89a-4245-47f7-95fb-294014311645}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="scene_manager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="game_scene.h">
+      <Filter>头文件\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="menu_scene.h">
+      <Filter>头文件\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>头文件\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectorScene.h">
+      <Filter>头文件\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="altas.h">
+      <Filter>头文件\anm</Filter>
+    </ClInclude>
+    <ClInclude Include="animation.h">
+      <Filter>头文件\anm</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy.h">
+      <Filter>头文件\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="bullet.h">
+      <Filter>头文件\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Divine_Sunderer.h">
+      <Filter>头文件\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Infinity_Edge.h">
+      <Filter>头文件\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>头文件\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Mejai_s_Soulstealer.h">
+      <Filter>头文件\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Morellonomicon.h">
+      <Filter>头文件\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Rapid_Firecannon.h">
+      <Filter>头文件\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Runaan_s_Hurricane.h">
+      <Filter>头文件\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="button.h">
+      <Filter>头文件\util</Filter>
+    </ClInclude>
+    <ClInclude Include="util.h">
+      <Filter>头文件\util</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.h">
+      <Filter>头文件\util</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
