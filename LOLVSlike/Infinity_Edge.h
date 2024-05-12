@@ -4,25 +4,36 @@
 
 #include"Player.h"
 
+extern Atlas Infinity_Edge_left;
+extern Atlas Infinity_Edge_right;
+
 class Infinity_Edge :public Player
 {
 public:
-	Infinity_Edge() = default;
+	Infinity_Edge()
+	{
+		anim_left.set_atlas(&Infinity_Edge_left);
+		anim_right.set_atlas(&Infinity_Edge_right);
+
+		anim_left.set_interval(75);
+		anim_right.set_interval(75);
+
+		type = 2;
+	}
 	~Infinity_Edge() = default;
 
-	virtual void on_update(int delta)
+	void Ping()
 	{
-
-	}
-
-	virtual void on_draw()
-	{
-
-	}
-
-	virtual void on_input()
-	{
-
+		switch (flag)
+		{
+		case 25:
+		{
+			damage = 500;
+			break;
+		}
+		default:
+			break;
+		}
 	}
 private:
 

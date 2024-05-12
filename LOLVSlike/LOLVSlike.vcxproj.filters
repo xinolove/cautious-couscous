@@ -56,12 +56,6 @@
     <ClInclude Include="animation.h">
       <Filter>头文件\anm</Filter>
     </ClInclude>
-    <ClInclude Include="enemy.h">
-      <Filter>头文件\Character</Filter>
-    </ClInclude>
-    <ClInclude Include="bullet.h">
-      <Filter>头文件\Character</Filter>
-    </ClInclude>
     <ClInclude Include="Divine_Sunderer.h">
       <Filter>头文件\Character\Player</Filter>
     </ClInclude>
@@ -91,6 +85,15 @@
     </ClInclude>
     <ClInclude Include="timer.h">
       <Filter>头文件\util</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>头文件\util</Filter>
+    </ClInclude>
+    <ClInclude Include="bullet.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy.h">
+      <Filter>头文件\Character</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

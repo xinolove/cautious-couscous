@@ -111,8 +111,7 @@ public:
 protected:
 	void Onclick()
 	{
-		//mciSendString(_T("play select repeat from 0"), NULL, 0, NULL);
-		scene_manager.switch_to(SceneManager::SceneType::Selector);
+			scene_manager.switch_to(SceneManager::SceneType::Selector);
 	}
 };
 

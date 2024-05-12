@@ -24,7 +24,6 @@ extern QuitGameButton btn_quit_game;
 extern IMAGE img_menu;
 
 
-
 class MenuScene:public Scene
 {
 public:
@@ -33,6 +32,7 @@ public:
 
 	void on_enter()
 	{
+
 	}
 	void on_draw()
 	{
