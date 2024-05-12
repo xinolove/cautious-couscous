@@ -25,7 +25,7 @@ public:
 	void Ping()
 	{
 		srand(time(0));
-		int n = rand() % 4;
+		int n = rand() % 5;
 		if (n == 0)
 			HP+=100;
 	}

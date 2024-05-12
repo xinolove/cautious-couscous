@@ -64,7 +64,7 @@ public:
 			if (n)
 				HP+=100;
 			else
-				HP-=75;
+				HP-=100;
 			break;
 		}
 	}

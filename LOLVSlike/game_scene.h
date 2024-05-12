@@ -92,14 +92,6 @@ public:
 				mciSendString(_T("play hurt from 0"), NULL, 0, NULL);
 				player->HP -= enemy->GetDamage();
 				enemy->InjuryProtection(player->GetPosition());
-				if (player->HP <= 0)
-				{
-					static TCHAR text[128];
-					_stprintf_s(text, _T("最终得分：%d！"), score);
-					MessageBox(GetHWnd(), text, _T("游戏结束"), MB_OK);
-					running = false;
-					break;
-				}
 			}
 		}
 
@@ -122,10 +114,20 @@ public:
 				if (enemy->CheckBulletCollision(bullet))
 				{
 					mciSendString(_T("play hit from 0"), NULL, 0, NULL);
+					player->Ping();
+					
 					enemy->Hurt(player->GetPosition(),player->damage);
+					
 				}
 			}
 		}
+		if (player->HP <= 0)
+					{
+						static TCHAR text[128];
+						_stprintf_s(text, _T("最终得分：%d！"), score);
+						MessageBox(GetHWnd(), text, _T("游戏结束"), MB_OK);
+						running = false;
+					}
 
 		for (size_t i = 0; i < enemy_list.size(); i++)
 		{
@@ -134,7 +136,6 @@ public:
 			{
 				if (player->flag < 25)
 					player->flag++;
-				player->Ping();
 				score++;
 				std::swap(enemy_list[i], enemy_list.back());
 				enemy_list.pop_back();

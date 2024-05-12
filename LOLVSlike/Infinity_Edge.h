@@ -24,16 +24,12 @@ public:
 
 	void Ping()
 	{
-		switch (flag)
-		{
-		case 25:
-		{
-			damage = 500;
-			break;
-		}
-		default:
-			break;
-		}
+		srand(time(0));
+		int n = rand() % 3;
+		if (n == 0)
+			damage = 225;
+		else
+			damage = 100;
 	}
 private:
 
