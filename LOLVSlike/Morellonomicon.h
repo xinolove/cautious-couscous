@@ -62,7 +62,7 @@ public:
 		default:
 			int n = rand() % 2;
 			if (n)
-				HP+=100;
+				HP+=125;
 			else
 				HP-=100;
 			break;

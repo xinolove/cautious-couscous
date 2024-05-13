@@ -26,10 +26,10 @@ D:\ROOM\test\cautious-couscous\LOLVSlike\enemy.h(139,14): warning C4244: “初�
 D:\ROOM\test\cautious-couscous\LOLVSlike\game_scene.h(106,76): warning C4244: “=”: 从“float”转换到“LONG”，可能丢失数据
 D:\ROOM\test\cautious-couscous\LOLVSlike\game_scene.h(107,76): warning C4244: “=”: 从“float”转换到“LONG”，可能丢失数据
 D:\ROOM\test\cautious-couscous\LOLVSlike\game_scene.h(148,13): warning C4244: “参数”: 从“time_t”转换到“unsigned int”，可能丢失数据
-D:\ROOM\test\cautious-couscous\LOLVSlike\game_scene.h(181,65): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
-D:\ROOM\test\cautious-couscous\LOLVSlike\game_scene.h(181,40): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
-D:\ROOM\test\cautious-couscous\LOLVSlike\game_scene.h(186,65): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
-D:\ROOM\test\cautious-couscous\LOLVSlike\game_scene.h(186,40): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\ROOM\test\cautious-couscous\LOLVSlike\game_scene.h(183,65): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\ROOM\test\cautious-couscous\LOLVSlike\game_scene.h(183,40): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\ROOM\test\cautious-couscous\LOLVSlike\game_scene.h(188,65): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\ROOM\test\cautious-couscous\LOLVSlike\game_scene.h(188,40): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
 D:\ROOM\test\cautious-couscous\LOLVSlike\Divine_Sunderer.h(27,13): warning C4244: “参数”: 从“time_t”转换到“unsigned int”，可能丢失数据
 D:\ROOM\test\cautious-couscous\LOLVSlike\Infinity_Edge.h(27,13): warning C4244: “参数”: 从“time_t”转换到“unsigned int”，可能丢失数据
 D:\ROOM\test\cautious-couscous\LOLVSlike\SelectorScene.h(157,88): warning C4244: “参数”: 从“int”转换到“float”，可能丢失数据

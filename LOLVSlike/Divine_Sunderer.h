@@ -27,7 +27,7 @@ public:
 		srand(time(0));
 		int n = rand() % 5;
 		if (n == 0)
-			HP+=100;
+			HP+=50;
 	}
 
 

@@ -96,7 +96,7 @@ void load_game_resources()
 	Runaan_s_Hurricane_left.load_from_file(_T("img/Runaan's_Hurricane/Runaan's_Hurricane_left_%d.png"), 6);
 	Runaan_s_Hurricane_right.load_from_file(_T("img/Runaan's_Hurricane/Runaan's_Hurricane_right_%d.png"), 6);
 
-	mciSendString(_T("open mus/tftset10_trailer.mp3 alias bgm "), NULL, 0, NULL);
+	mciSendString(_T("open mus/bgm.mp3 alias bgm "), NULL, 0, NULL);
 	mciSendString(_T("open mus/sci-fi_weapon_blaster_laser_boom_zap_01.wav alias hit "), NULL, 0, NULL);
 	mciSendString(_T("open mus/voice_female_a_hurt_pain_01.wav alias hurt "), NULL, 0, NULL);
 	mciSendString(_T("open mus/Éñ·Ö.wav alias div "), NULL, 0, NULL);

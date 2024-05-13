@@ -146,7 +146,7 @@ public:
 	void on_draw()
 	{
 		srand(time(0));
-		static int n = rand() % 8;
+		static int n = rand() % 9;
 		switch (n)
 		{
 		case 0:
@@ -173,6 +173,8 @@ public:
 		case 7:
 			loadimage(&img_background, _T("img/ÒÔÐ÷°Â¿Ï.jpg"));
 			break;
+		case 8:
+			loadimage(&img_background, _T("img/MSI.jpg"));
 		}
 		putimage(0, 0, &img_background);
 		if (collision)

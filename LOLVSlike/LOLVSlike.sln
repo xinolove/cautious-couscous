@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LOLVSlike", "LOLVSlike.vcxproj", "{6E453999-B799-49D8-98FB-ABC048649757}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Blessing_of_the_God_of_Mouse", "..\Blessing_of_the_God_of_Mouse\Blessing_of_the_God_of_Mouse.vdproj", "{E035C0AE-9258-4E28-97C1-8B57FBB5CA08}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,10 @@ Global
 		{6E453999-B799-49D8-98FB-ABC048649757}.Release|x64.Build.0 = Release|x64
 		{6E453999-B799-49D8-98FB-ABC048649757}.Release|x86.ActiveCfg = Release|Win32
 		{6E453999-B799-49D8-98FB-ABC048649757}.Release|x86.Build.0 = Release|Win32
+		{E035C0AE-9258-4E28-97C1-8B57FBB5CA08}.Debug|x64.ActiveCfg = Debug
+		{E035C0AE-9258-4E28-97C1-8B57FBB5CA08}.Debug|x86.ActiveCfg = Debug
+		{E035C0AE-9258-4E28-97C1-8B57FBB5CA08}.Release|x64.ActiveCfg = Release
+		{E035C0AE-9258-4E28-97C1-8B57FBB5CA08}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
